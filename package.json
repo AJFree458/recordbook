@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A MERN stack app for users to record gas and maintenance for vehicles",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "build-client": "cd client && npm run build",
     "server": "nodemon server --ignore client",
