@@ -1,42 +1,68 @@
-// dotenv setup
-require("dotenv").config();
-
-// express async errors module
-require("express-async-errors");
-
-// express
-const express = require("express");
+// import express
+import express from "express";
 const app = express();
 
-// rest of packages
-const path = require("path");
-const morgan = require("morgan");
+// dotenv setup
+import dotenv from "dotenv";
+dotenv.config();
+
+// express async errors module
+import "express-async-errors";
+
+// morgan for api information
+import morgan from "morgan";
+
+// packages for build
+// import { dirname } from "path";
+// import { fileURLToPath } from "url";
+// import path from "path";
+
+// import helmet from "helmet";
+// import xss from "xss-clean";
+// import mongoSanitize from "express-mongo-sanitize";
 
 // database connection
+import connectDB from "./db/connect.js";
 
 // routers
 
-// middleware, error middleware
+// middleware imports
 
-// routes
-app.use(morgan("tiny"));
-app.use(express.json());
-
-// Serve up static assets (usually on heroku)
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"));
+if (process.env.NODE_ENV !== "production") {
+  app.use(morgan("dev"));
 }
 
+// for build
+// const __dirname = dirname(fileURLToPath(import.meta.url));
+
+app.use(express.json());
+// for build
+// app.use(helmet());
+// app.use(xss());
+// app.use(mongoSanitize());
+
 // define the base api route
+// app.use("/api/v1/auth");
 
 // Send every request to the React app
-// Define any API routes before this runs
-app.get("*", function (req, res) {
-  res.sendFile(path.join(__dirname, "./client/build/index.html"));
-});
+// only when ready to deploy
+// app.get('*', (req, res) => {
+//   res.sendFile(path.resolve(__dirname, './client/build', 'index.html'))
+// })
+// error middleware
 
+// server port
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, function () {
-  console.log(`🌎 ==> API server now on port ${PORT}!`);
-});
+const start = async () => {
+  try {
+    await connectDB(process.env.MONGO_URL);
+    app.listen(PORT, () =>
+      console.log(`Server is listening on port ${PORT}...`)
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+start();
