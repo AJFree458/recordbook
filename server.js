@@ -25,8 +25,12 @@ import morgan from "morgan";
 import connectDB from "./db/connect.js";
 
 // routers
+import authRouter from "./routes/authRoutes.js";
 
 // middleware imports
+import notFoundMiddleware from "./middleware/not-found.js";
+import errorHandlerMiddleware from "./middleware/error-handler.js";
+// import authenticateUser from "./middleware/auth.js";
 
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
@@ -42,7 +46,7 @@ app.use(express.json());
 // app.use(mongoSanitize());
 
 // define the base api route
-// app.use("/api/v1/auth");
+app.use("/api/v1/auth", authRouter);
 
 // Send every request to the React app
 // only when ready to deploy
@@ -50,6 +54,8 @@ app.use(express.json());
 //   res.sendFile(path.resolve(__dirname, './client/build', 'index.html'))
 // })
 // error middleware
+app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
 
 // server port
 const PORT = process.env.PORT || 5000;
